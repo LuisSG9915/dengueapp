@@ -9,15 +9,21 @@ import {
   Dimensions,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
+
+import { useNavigation } from '@react-navigation/native';
 import { Boton } from '../components/Boton';
 import LinearGradient from 'react-native-linear-gradient';
 import axios, * as others from 'axios';
-import { InputBox } from '../components/InputBox';
-import { Link, useHistory } from 'react-router-native';
+// import axios from 'axios';
 
-export const ScreenLogin = ({}) => {
+import { InputBox } from '../components/InputBox';
+import { styles } from '../theme/appTheme';
+
+export const ScreenLogin = () => {
+  const navigation = useNavigation();
+
   const { height, width } = Dimensions.get('window');
-  const history = useHistory();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState('');
@@ -47,7 +53,6 @@ export const ScreenLogin = ({}) => {
       })
       .then((response: any) => {
         console.log(response.data);
-        console.log(response.data.message);
         setLoginStatus(response.data.message);
       })
       .catch((error: any) => {
@@ -55,25 +60,26 @@ export const ScreenLogin = ({}) => {
       });
   };
 
-  // if (loginStatus != 'equivocado' && loginStatus.length > 1) {
-  //   // history.push('ScreenIntermediario');
-  // }
-
   useEffect(() => {
     axios.get('http://192.168.100.6:8000/login').then(response => {
       if (response.data.loggedIn == true) {
         setLoginStatus(response.data.user[0].email);
         setRol(response.data.user[0].role);
       }
-
-      // console.log(response.data.user[0].email);
+      console.log(loginStatus);
     });
   }, []);
-  if (rol == 'Admin') {
-    history.push('GestionarUsuarios');
-  }
+
+  // if (
+  //   loginStatus == 'Credenciales correctas, en un momento accede al sistema'
+  // ) {
+  //   navigation.navigate('ScreenMenu');
+  // }
   if (rol == 'normalUser') {
-    history.push('ScreenMenu');
+    navigation.navigate('ScreenMenu');
+  }
+  if (rol == 'Admin') {
+    navigation.navigate('GestionarUsuarios');
   }
 
   return (
@@ -87,15 +93,19 @@ export const ScreenLogin = ({}) => {
         <SafeAreaView style={sty.container}>
           <ScrollView
             contentContainerStyle={{
-              height: '100%',
+              // backgroundColor: 'red',
+              height: '50%',
               flex: 1,
             }}
           >
             <View
               style={{
+                // backgroundColor: 'blue',
+                // flexDirection: 'column',
                 flex: 1,
                 justifyContent: 'space-evenly',
                 alignItems: 'center',
+                // alignContent: 'center',
               }}
             >
               <Image
@@ -135,7 +145,7 @@ export const ScreenLogin = ({}) => {
               />
               <TouchableOpacity
                 style={{ marginLeft: '28%' }}
-                onPress={() => history.push('/ScreenRevocerPass')}
+                onPress={() => navigation.navigate('ScreenRecoverPass')}
               >
                 <Text
                   style={[
@@ -153,13 +163,12 @@ export const ScreenLogin = ({}) => {
                 ]}
               >
                 {loginStatus}
+                {rol}
               </Text>
               <Boton
                 texto={'Iniciar sesión'}
                 icon={'sign-in'}
-                // onPress={() => {
-                //   history.push('/ScreenMenu');
-                // }}
+                // onPress={() => navigation.navigate('ScreenMenu')}
                 onPress={login}
               ></Boton>
             </View>

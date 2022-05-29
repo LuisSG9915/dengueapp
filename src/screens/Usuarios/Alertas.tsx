@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { styles } from '../theme/appTheme';
-import { getTasks } from '../../api';
-import ListFlat from '../components/ListFlat';
-import { PanelSuperior } from '../components/PanelSuperior';
-import { Boton } from '../components/Boton';
+import { styles } from '../../theme/appTheme';
+import { getTasks } from '../../../api';
+import ListFlat from '../../components/ListFlat';
+import { PanelSuperior } from '../../components/PanelSuperior';
+import { Boton } from '../../components/Boton';
 import { useNavigation } from '@react-navigation/native';
 
 export const Alertas = () => {

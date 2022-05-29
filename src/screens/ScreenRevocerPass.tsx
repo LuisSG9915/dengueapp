@@ -1,29 +1,27 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Boton } from '../components/Boton';
+import { ContraseñaBox } from '../components/ContraseñaBox';
 import { InputBox } from '../components/InputBox';
+import { styles } from '../theme/appTheme';
 import { PanelInferiorRojo } from '../components/PanelInferiorRojo';
 import { PanelSuperior } from '../components/PanelSuperior';
-import { BackButton } from 'react-router-native';
 
-export const ScreenRevocerPass = ({}) => {
+export const ScreenRevocerPass = () => {
   return (
     <View style={{ backgroundColor: 'red', flex: 1 }}>
       {/* FIXME: Insertar imagen o icono */}
       <PanelSuperior></PanelSuperior>
 
       <PanelInferiorRojo>
-        <InputBox
-          placeHolder={'Recuperar Contraseña'}
-          secureTextEntry={false}
-        ></InputBox>
+        <InputBox placeHolder={'Recuperar Contraseña'}></InputBox>
         {/* FIXME: Insertar imagen  */}
 
         <Boton
           texto="Restablecer contraseña"
           margins={40}
-          onPress={() => {
-            console.log('a');
+          onPress={function (): {} {
+            throw new Error('Function not implemented.');
           }}
         ></Boton>
       </PanelInferiorRojo>

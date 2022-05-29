@@ -2,23 +2,22 @@ import { View, Text, Dimensions } from 'react-native';
 import React from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LineChart } from 'react-native-chart-kit';
-import { styles } from '../theme/appTheme';
-import { PanelSuperior } from '../components/PanelSuperior';
-import Header from '../components/Header';
+import { styles } from '../../theme/appTheme';
+import { PanelSuperior } from '../../components/PanelSuperior';
 
 const MetricsScreen = () => {
   return (
-    <ScrollView contentContainerStyle={{}}>
-      <Header texto={'metrics'}></Header>
+    <ScrollView>
       <PanelSuperior>
         <View>
           <View
             style={{
               ...styles.textInputContainer,
-              backgroundColor: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
               justifyContent: 'center',
               alignItems: 'center',
               marginVertical: 15,
+              borderRadius: 15,
             }}
           >
             <Text style={{ ...styles.botonText, textAlign: 'center' }}>
@@ -72,10 +71,11 @@ const MetricsScreen = () => {
           <View
             style={{
               ...styles.textInputContainer,
-              backgroundColor: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
               justifyContent: 'center',
               alignItems: 'center',
               marginVertical: 15,
+              borderRadius: 15,
             }}
           >
             <Text style={{ ...styles.botonText, textAlign: 'center' }}>
@@ -129,10 +129,11 @@ const MetricsScreen = () => {
           <View
             style={{
               ...styles.textInputContainer,
-              backgroundColor: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: 15,
+              borderRadius: 15,
             }}
           >
             <Text style={{ ...styles.botonText, textAlign: 'center' }}>
@@ -186,10 +187,11 @@ const MetricsScreen = () => {
           <View
             style={{
               ...styles.textInputContainer,
-              backgroundColor: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: 15,
+              borderRadius: 15,
             }}
           >
             <Text style={{ ...styles.botonText, textAlign: 'center' }}>

@@ -7,8 +7,8 @@ import MapView, {
   Circle,
   Callout,
 } from 'react-native-maps';
-import Header from '../components/Header';
-import Search from '../components/Search';
+import Header from '../../components/Header';
+import Search from '../../components/Search';
 
 export const HomeMap = () => {
   const [origin, setOrgin] = React.useState({
@@ -41,10 +41,9 @@ export const HomeMap = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'blue' }}>
-      <Header texto={'mapas'}></Header>
+    <View style={{ flex: 1 }}>
       <MapView
-        style={{ flex: 15 }}
+        style={{ flex: 1 }}
         initialRegion={{
           latitude: origin.latitude,
           longitude: origin.longitude,
@@ -65,19 +64,17 @@ export const HomeMap = () => {
                 style={{
                   flexDirection: 'column',
                   alignSelf: 'flex-start',
-                  justifyContent: 'center',
                   backgroundColor: 'white',
                   borderRadius: 6,
                   borderColor: '#CCC',
-                  // borderWidth: 0.5,
+                  borderWidth: 0.5,
                   padding: 15,
-                  height: 80,
-                  width: 500,
+                  // height: 80,
                 }}
               >
-                <Text> Estado del brote: Grave</Text>
-                <Text> Municipio: Xalapa</Text>
-                <Text> Cantidad de huevecillos: 30000</Text>
+                <Text> Estado del brote:</Text>
+                <Text> Municipio:</Text>
+                <Text> Cantidad de huevecillos:</Text>
               </View>
             </View>
           </Callout>
@@ -106,8 +103,7 @@ export const HomeMap = () => {
           strokeWidth={2}
         /> */}
       </MapView>
-      {/* <Search></Search> */}
-      {/* <View style={{ flex: 1, backgroundColor: 'blue' }}></View> */}
+      <Search></Search>
     </View>
   );
 };

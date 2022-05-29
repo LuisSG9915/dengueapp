@@ -2,9 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { InputBox } from '../components/InputBox';
-import { styles } from '../theme/appTheme';
-import { PanelSuperior } from '../components/PanelSuperior';
+import { InputBox } from '../../components/InputBox';
+import { styles } from '../../theme/appTheme';
+import { PanelSuperior } from '../../components/PanelSuperior';
 
 export const VisualizarUsuarios = () => {
   const navigation = useNavigation();
