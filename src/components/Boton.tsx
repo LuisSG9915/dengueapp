@@ -6,7 +6,7 @@ interface Props {
   texto: string;
   icon: string;
   //   paddingRightText: number;
-  onPress: () => {};
+  onPress?: () => {};
 }
 
 export const Boton = ({

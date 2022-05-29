@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { PanelSuperior } from '../components/PanelSuperior';
 import { PanelInferiorRojo } from '../components/PanelInferiorRojo';
 export const GestionarUsuarios = () => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   return (
     <View style={{ backgroundColor: 'red', flex: 1 }}>
@@ -24,22 +24,22 @@ export const GestionarUsuarios = () => {
           texto={'Crear usuarios'}
           icon="user-plus"
           paddingRightIcon={-50}
-          onPress={() => navigation.navigate('CrearUsuarios')}
+          onPress={() => console.log('a')}
         ></Boton>
         <Boton
           texto={'Visualizar usuarios'}
           icon="user"
-          onPress={() => navigation.navigate('VisualizarUsuarios')}
+          onPress={() => console.log('a')}
         ></Boton>
         <Boton
           texto={'Solicitudes'}
           icon="file"
-          onPress={() => navigation.navigate('VisualizarSolicitudes')}
+          onPress={() => console.log('a')}
         ></Boton>
         <Boton
           texto={'Alertas'}
           icon={'exclamation'}
-          onPress={() => navigation.navigate('Alertas')}
+          onPress={() => console.log('a')}
         ></Boton>
         {/* <Boton texto={'Alertas'}></Boton> */}
       </PanelInferiorRojo>

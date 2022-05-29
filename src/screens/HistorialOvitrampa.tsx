@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, Touchable, View, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import Header from '../components/Header';
 import { styles } from '../theme/appTheme';
 
 export const HistorialOvitrampa = () => {
@@ -20,6 +21,7 @@ export const HistorialOvitrampa = () => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView>
+        <Header texto={'Ovitrampas'}></Header>
         <View style={styles.panelSuperiorGris}>
           {data.map((item, index) => {
             return (

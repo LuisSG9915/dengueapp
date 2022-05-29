@@ -4,10 +4,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { LineChart } from 'react-native-chart-kit';
 import { styles } from '../theme/appTheme';
 import { PanelSuperior } from '../components/PanelSuperior';
+import Header from '../components/Header';
 
 const MetricsScreen = () => {
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{}}>
+      <Header texto={'metrics'}></Header>
       <PanelSuperior>
         <View>
           <View

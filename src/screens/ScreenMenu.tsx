@@ -1,60 +1,78 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Boton } from '../components/Boton';
 import { styles } from '../theme/appTheme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParams } from '../../App';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios';
+import { Navigate, useHistory } from 'react-router-native';
+import {} from 'react-router-native';
+import Header from '../components/Header';
 
-// type Props = NativeStackScreenProps<
-//   RootStackParams,
-//   'GestionarUsuarios',
-//   'HomeMap'
-// >;
-export const ScreenMenu = () => {
-  const navigation = useNavigation<NativeStackScreenProps>();
+export const ScreenMenu = ({}) => {
+  const [rol, setRol] = useState('');
+  axios.defaults.withCredentials = true;
+  useEffect(() => {
+    axios.get('http://192.168.100.6:8000/login').then(response => {
+      if (response.data.loggedIn == true) {
+        setRol(response.data.user[0].role);
+      }
+      // console.log(response.data.user[0].email);
+    });
+  }, []);
+
+  const history = useHistory();
   return (
     <View style={{ backgroundColor: 'red', flex: 1 }}>
       {/* FIXME: Insertar imagen o icono */}
-
+      <Header state={false} texto={'Menu'}></Header>
       <View style={styles.panelSuperiorGris}>
         {/* FIXME: Insertar imagen */}
       </View>
 
       <View style={styles.panelInferiorRed}>
-        <Boton
-          texto="Mapa"
-          onPress={() => navigation.navigate('HomeMap')}
-          icon="map"
-          // paddingRightIcon={92}
-          // paddingRightText={80}
-        >
-          <Text>a</Text>
-        </Boton>
-        <Boton
-          onPress={() => navigation.navigate('MetricsScreen')}
-          texto="Métricas"
-          icon="chart-bar"
-          paddingRightIcon={-100}
-          // paddingRightText={80}
-        ></Boton>
-        <Boton
-          icon="history"
-          onPress={() => navigation.navigate('HistorialOvitrampa')}
-          texto="Historial"
-        ></Boton>
-        <Boton
-          onPress={() => navigation.navigate('GestionarUsuarios')}
-          icon="users"
-          texto="Usuarios"
-        ></Boton>
-        <Boton
-          icon="search"
-          // onPress={async () => console.log('a')}
-          onPress={async () => console.log('a')}
-          texto="Prediccion"
-        ></Boton>
+        {/* ESPECIFICACIÓN DE ROLES DE USUARIO */}
+
+        {rol == 'normalUser' && (
+          <Boton
+            texto="Mapa"
+            onPress={() => history.push('/HomeMap')}
+            icon="map"
+          ></Boton>
+        )}
+
+        {rol == 'normalUser' && (
+          <Boton
+            texto="Métricas"
+            onPress={() => history.push('/MetricsScreen')}
+            icon="toggle-right"
+            paddingRightIcon={-100}
+            // paddingRightText={80}
+          ></Boton>
+        )}
+
+        {rol == 'normalUser' && (
+          <Boton
+            icon="history"
+            onPress={() => history.push('/HistorialOvitrampa')}
+            texto="Historial"
+          ></Boton>
+        )}
+
+        {rol == 'Admin' && (
+          <Boton
+            onPress={() => history.push('/GestionarUsuarios')}
+            icon="users"
+            texto="Usuarios"
+          ></Boton>
+        )}
+
+        {rol == 'normalUser' && (
+          <Boton
+            icon="search"
+            onPress={async () => console.log('a')}
+            texto="Prediccion"
+          ></Boton>
+        )}
       </View>
     </View>
   );

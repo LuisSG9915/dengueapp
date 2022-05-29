@@ -9,25 +9,19 @@ import {
   Dimensions,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-
-import { useNavigation } from '@react-navigation/native';
 import { Boton } from '../components/Boton';
 import LinearGradient from 'react-native-linear-gradient';
 import axios, * as others from 'axios';
-// import axios from 'axios';
-
 import { InputBox } from '../components/InputBox';
-import { styles } from '../theme/appTheme';
+import { Link, useHistory } from 'react-router-native';
 
-export const ScreenLogin = () => {
-  const navigation = useNavigation();
-
+export const ScreenLogin = ({}) => {
   const { height, width } = Dimensions.get('window');
-
+  const history = useHistory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState('');
-
+  const [rol, setRol] = useState('');
   axios.defaults.withCredentials = true;
 
   const register = () => {
@@ -53,6 +47,7 @@ export const ScreenLogin = () => {
       })
       .then((response: any) => {
         console.log(response.data);
+        console.log(response.data.message);
         setLoginStatus(response.data.message);
       })
       .catch((error: any) => {
@@ -60,39 +55,27 @@ export const ScreenLogin = () => {
       });
   };
 
+  // if (loginStatus != 'equivocado' && loginStatus.length > 1) {
+  //   // history.push('ScreenIntermediario');
+  // }
+
   useEffect(() => {
     axios.get('http://192.168.100.6:8000/login').then(response => {
       if (response.data.loggedIn == true) {
         setLoginStatus(response.data.user[0].email);
+        setRol(response.data.user[0].role);
       }
+
       // console.log(response.data.user[0].email);
     });
   }, []);
+  if (rol == 'Admin') {
+    history.push('GestionarUsuarios');
+  }
+  if (rol == 'normalUser') {
+    history.push('ScreenMenu');
+  }
 
-  // const login = () => {
-  //   axios
-  //     .post('http://localhost:8000/login', {
-  //       email: email,
-  //       password: password,
-  //     })
-  //     .catch(function (error) {
-  //       if (error.response) {
-  //         console.log(error.response.data);
-  //         console.log(error.response.status);
-  //         console.log(error.response.headers);
-  //       } else if (error.request) {
-  //         // The request was made but no response was received
-  //         console.log(error.request);
-  //       } else {
-  //         // Something happened in setting up the request that triggered an Error
-  //         console.log('Error', error.message);
-  //       }
-  //     })
-  //     .then((response: any) => {
-  //       console.log(response.data);
-  //       setLoginStatus(response.data.message);
-  //     });
-  // };
   return (
     <>
       <LinearGradient
@@ -104,19 +87,15 @@ export const ScreenLogin = () => {
         <SafeAreaView style={sty.container}>
           <ScrollView
             contentContainerStyle={{
-              // backgroundColor: 'red',
-              height: '50%',
+              height: '100%',
               flex: 1,
             }}
           >
             <View
               style={{
-                // backgroundColor: 'blue',
-                // flexDirection: 'column',
                 flex: 1,
                 justifyContent: 'space-evenly',
                 alignItems: 'center',
-                // alignContent: 'center',
               }}
             >
               <Image
@@ -156,7 +135,7 @@ export const ScreenLogin = () => {
               />
               <TouchableOpacity
                 style={{ marginLeft: '28%' }}
-                onPress={() => navigation.navigate('ScreenRecoverPass')}
+                onPress={() => history.push('/ScreenRevocerPass')}
               >
                 <Text
                   style={[
@@ -178,7 +157,9 @@ export const ScreenLogin = () => {
               <Boton
                 texto={'Iniciar sesión'}
                 icon={'sign-in'}
-                // onPress={() => navigation.navigate('ScreenMenu')}
+                // onPress={() => {
+                //   history.push('/ScreenMenu');
+                // }}
                 onPress={login}
               ></Boton>
             </View>
