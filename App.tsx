@@ -1,16 +1,16 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Alertas } from './src/screens/Usuarios/Alertas';
 import { CrearUsuarios } from './src/screens/Usuarios/CrearUsuarios';
 import { GestionarUsuarios } from './src/screens/Usuarios/GestionarUsuarios';
 import { HistorialOvitrampa } from './src/screens/Historial/HistorialOvitrampa';
 import { HomeMap } from './src/screens/Mapas/HomeMap';
 import { ScreenGenPDF } from './src/screens/ScreenGenPDF';
-import { ScreenLogin } from './src/screens/ScreenLogin';
+import { ScreenLogin } from './src/screens/Login/ScreenLogin';
 import { ScreenMenu } from './src/screens/Menu/ScreenMenu';
-import { ScreenRevocerPass } from './src/screens/ScreenRevocerPass';
+import { ScreenRevocerPass } from './src/screens/Login/ScreenRevocerPass';
 import { VisualizarSolicitudes } from './src/screens/Usuarios/VisualizarSolicitudes';
 import { VisualizarUsuarios } from './src/screens/Usuarios/VisualizarUsuarios';
 import { Screen } from 'react-native-screens';
@@ -36,45 +36,19 @@ export type RootStackParams = {
 };
 
 const App = () => {
+  const [loginStatus, setLoginStatus] = useState(false);
   const Stack = createNativeStackNavigator<RootStackParams>();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ScreenLogin">
-        {/* <Stack.Screen
-					name="Screen"
-					component={Screen}
-					options={{
-						title: "Screen",
-						headerStyle: {
-							backgroundColor:
-								"rgb(178, 56, 45)",
-						},
-						headerTintColor:
-							"#fff",
-						headerTitleAlign:
-							"center",
-						headerTitleStyle: {
-							fontWeight: "bold",
-						},
-					}}
-				/> */}
+      <Stack.Navigator
+        // initialRouteName={loginStatus == false ? 'ScreenLogin' : 'ScreenMenu'}
+        initialRouteName={'ScreenLogin'}
+      >
         <Stack.Screen
           name="ScreenLogin"
           component={ScreenLogin}
           options={{
             headerShown: false,
-            // title: "Iniciar sesión",
-            // headerStyle: {
-            // 	backgroundColor:
-            // 		"rgb(178, 56, 45)",
-            // },
-            // headerTintColor:
-            // 	"#fff",
-            // headerTitleAlign:
-            // 	"center",
-            // headerTitleStyle: {
-            // 	fontWeight: "bold",
-            // },
           }}
         />
         <Stack.Screen
@@ -150,6 +124,7 @@ const App = () => {
             headerTitleStyle: {
               fontWeight: 'bold',
             },
+            headerBackButtonMenuEnabled: false,
           }}
         />
         <Stack.Screen

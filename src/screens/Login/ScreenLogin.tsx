@@ -7,32 +7,32 @@ import {
   Image,
   View,
   Dimensions,
+  Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
-import { Boton } from '../components/Boton';
+import { Boton } from '../../components/Boton';
 import LinearGradient from 'react-native-linear-gradient';
 import axios, * as others from 'axios';
-// import axios from 'axios';
 
-import { InputBox } from '../components/InputBox';
-import { styles } from '../theme/appTheme';
+import { InputBox } from '../../components/InputBox';
 
 export const ScreenLogin = () => {
   const navigation = useNavigation();
 
   const { height, width } = Dimensions.get('window');
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState('');
   const [rol, setRol] = useState('');
+
   axios.defaults.withCredentials = true;
 
   const register = () => {
     axios
       .post('http://192.168.100.6:8000/register', {
+        // .post('http://10.42.0.55:8000/register', {
         email: email,
         password: password,
       })
@@ -47,6 +47,7 @@ export const ScreenLogin = () => {
 
   const login = () => {
     axios
+      // .post('http://10.42.0.55:8000/login', {
       .post('http://192.168.100.6:8000/login', {
         email: email,
         password: password,
@@ -62,6 +63,7 @@ export const ScreenLogin = () => {
 
   useEffect(() => {
     axios.get('http://192.168.100.6:8000/login').then(response => {
+      // axios.get('http://10.42.0.55:8000/login').then(response => {
       if (response.data.loggedIn == true) {
         setLoginStatus(response.data.user[0].email);
         setRol(response.data.user[0].role);
@@ -70,18 +72,12 @@ export const ScreenLogin = () => {
     });
   }, []);
 
-  // if (
-  //   loginStatus == 'Credenciales correctas, en un momento accede al sistema'
-  // ) {
-  //   navigation.navigate('ScreenMenu');
-  // }
   if (rol == 'normalUser') {
     navigation.navigate('ScreenMenu');
   }
   if (rol == 'Admin') {
     navigation.navigate('GestionarUsuarios');
   }
-
   return (
     <>
       <LinearGradient
@@ -100,16 +96,13 @@ export const ScreenLogin = () => {
           >
             <View
               style={{
-                // backgroundColor: 'blue',
-                // flexDirection: 'column',
                 flex: 1,
                 justifyContent: 'space-evenly',
                 alignItems: 'center',
-                // alignContent: 'center',
               }}
             >
               <Image
-                source={require('../assets/dengue.png')}
+                source={require('../../assets/dengue.png')}
                 style={{
                   width: (width / 2) * 1.8,
                   height: (height / 4) * 1.5,
@@ -146,6 +139,7 @@ export const ScreenLogin = () => {
               <TouchableOpacity
                 style={{ marginLeft: '28%' }}
                 onPress={() => navigation.navigate('ScreenRecoverPass')}
+                // onPress={createTwoButtonAlert}
               >
                 <Text
                   style={[
@@ -156,20 +150,36 @@ export const ScreenLogin = () => {
                   Recovery Password
                 </Text>
               </TouchableOpacity>
+              {loginStatus == 'equivocado' ? (
+                <Text
+                  style={[
+                    sty.buttonsText,
+                    {
+                      fontWeight: 'bold',
+                      textAlign: 'right',
+                      color: 'red',
+                    },
+                  ]}
+                >
+                  Las credenciales proporcionados son incorrectas, favor de
+                  intentarlo de nuevo
+                </Text>
+              ) : null}
               <Text
                 style={[
                   sty.buttonsText,
-                  { fontWeight: 'bold', lineHeight: 30, textAlign: 'right' },
+                  {
+                    fontWeight: 'bold',
+                    lineHeight: 30,
+                    textAlign: 'right',
+                  },
                 ]}
-              >
-                {loginStatus}
-                {rol}
-              </Text>
+              ></Text>
               <Boton
                 texto={'Iniciar sesión'}
                 icon={'sign-in'}
-                // onPress={() => navigation.navigate('ScreenMenu')}
                 onPress={login}
+                // onPress={() => navigation.navigate('HomeMap')}
               ></Boton>
             </View>
           </ScrollView>

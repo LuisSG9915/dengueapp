@@ -34,7 +34,7 @@ export const ScreenMenu = () => {
         <Boton
           onPress={() => navigation.navigate('MetricsScreen')}
           texto="Métricas"
-          icon="chart-bar"
+          icon="star"
           paddingRightIcon={-100}
           // paddingRightText={80}
         ></Boton>
