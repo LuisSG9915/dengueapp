@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
   },
   panelSuperiorGris: {
     backgroundColor: 'rgb(87, 87, 86)',
+    // backgroundColor: 'red',
     flex: 7,
     flexDirection: 'column',
     alignItems: 'center',
@@ -57,7 +58,7 @@ export const styles = StyleSheet.create({
   botonBox: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 292,
+    width: 310,
     height: 52,
     borderRadius: 16,
     backgroundColor: 'rgb(255, 210, 0)',
@@ -70,9 +71,9 @@ export const styles = StyleSheet.create({
   },
 
   container: {
-    height: 30,
+    height: 55,
     width: '80%',
-    marginTop: 50,
+    marginTop: 25,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',

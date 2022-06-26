@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Button, Dimensions, Alert } from 'react-native';
+import { View, StyleSheet, Button, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { styles } from '../../theme/appTheme';
 import { Picker } from '@react-native-picker/picker';
@@ -9,7 +9,7 @@ import { BASE_URL } from '../../config';
 import OvitrampasList from '../../components/OvitrampasList';
 import { ContextPrueba } from '../../ContextPrueba';
 
-export const HistorialOvitrampa = () => {
+export const ScreenPredicciones = () => {
   const [data, setData] = useState([]);
   const [value, setValue] = useState([]);
   const [ovitrampasPeticion, setOvitrampasPeticion] = useState([]);
@@ -29,7 +29,7 @@ export const HistorialOvitrampa = () => {
   const jursdicciones = (valor: React.SetStateAction<any[]>) => {
     setValue(valor);
     setBASE_JURSDICCION(date);
-    mostrarOvitrampa();
+    // mostrarOvitrampa();
   };
 
   const jurisdiccion = [
@@ -45,6 +45,7 @@ export const HistorialOvitrampa = () => {
     'tuxpan',
     'veracruz',
   ];
+  // TODO Peticion del archivo JSON de Héctor
   const mostrarOvitrampa = async () => {
     // setIsLoading(true);
     await axios
@@ -59,8 +60,7 @@ export const HistorialOvitrampa = () => {
         console.log(`register error ${e}`);
         // setIsLoading(false);
       });
-
-    console.log('e');
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -81,7 +81,11 @@ export const HistorialOvitrampa = () => {
         <Picker
           style={{ backgroundColor: 'white' }}
           selectedValue={value}
-          onFocus={() => {}}
+          onFocus={() => {
+            mostrarOvitrampa();
+
+            // setRefreshing(true);
+          }}
           onValueChange={(itemValue, itemIndex) => jursdicciones(itemValue)}
         >
           {pickerData(jurisdiccion)}

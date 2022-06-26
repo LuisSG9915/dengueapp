@@ -1,21 +1,35 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  FlatList,
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { InputBox } from '../../components/InputBox';
 import { styles } from '../../theme/appTheme';
 import { PanelSuperior } from '../../components/PanelSuperior';
+import axios from 'axios';
+import { BASE_URL } from '../../config';
+import UsuariosList from '../../components/UsuariosList';
 
 export const VisualizarUsuarios = () => {
   const navigation = useNavigation();
+  // const [data, setData] = useState([]);
   const [data, setData] = useState([]);
+  const [email, setEmail] = useState([]);
+  const [password, setPassword] = useState([]);
+  const [usuariosPet, setUsuariosPet] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
 
   // Use Effect para el cambio del header de navegación
   useEffect(() => {
     navigation.setOptions({
       headerLargeTitle: true,
-      headerTitle: 'Home',
+      headerTitle: ' Usuarios',
 
       // SearchBar en el header
       headerSearchBarOptions: {
@@ -53,9 +67,23 @@ export const VisualizarUsuarios = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData('https://randomuser.me/api/?results=20');
-  }, []);
+  const mostrarUsuario = async () => {
+    // setIsLoading(true);
+    axios
+      .get(`${BASE_URL}/usuarios`, {
+        email,
+        password,
+      })
+      .then(res => {
+        const usuarios = res.data;
+        setUsuariosPet(usuarios);
+        // console.log(usuarios);
+      })
+      .catch(e => {
+        console.log(`register error ${e}`);
+        // setIsLoading(false);
+      });
+  };
 
   const fetchData = async (url: string) => {
     try {
@@ -68,27 +96,23 @@ export const VisualizarUsuarios = () => {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    // fetchData('https://randomuser.me/api/?results=20');
+    mostrarUsuario();
+  }, []);
+
   return (
-    <ScrollView>
-      <PanelSuperior>
-        {filteredData.map((item, index) => {
-          return (
-            <View key={index} style={stylesX.itemContainer}>
-              <Image
-                source={{
-                  uri: item.picture.large,
-                }}
-                style={stylesX.image}
-              />
-              <Text style={stylesX.textName}>
-                {item.name.first} {item.name.last}
-              </Text>
-            </View>
-          );
-        })}
-      </PanelSuperior>
-      <Text style={stylesX.textFriends}>Amigos</Text>
-    </ScrollView>
+    <View
+      style={{
+        backgroundColor: 'blue',
+        flex: 1,
+      }}
+    >
+      <View style={stylesX.container}>
+        <UsuariosList usuariosPet={usuariosPet}></UsuariosList>
+      </View>
+    </View>
   );
 };
 
@@ -101,10 +125,15 @@ const stylesX = StyleSheet.create({
     marginTop: 10,
   },
   itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     marginLeft: 10,
-    marginTop: 10,
+    backgroundColor: 'rgba(248, 248, 248,0.8)',
+  },
+  container: {
+    backgroundColor: 'rgb(87, 87, 86)',
+    flex: 1,
+    paddingVertical: 22,
   },
   image: {
     width: 50,

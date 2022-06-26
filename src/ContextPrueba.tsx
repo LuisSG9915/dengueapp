@@ -1,58 +1,130 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React, { SetStateAction, useEffect } from 'react';
 import { createContext, useState } from 'react';
-// import React, { createContext, useEffect, useState } from 'react';
+import { BASE_URL } from './config';
 
 interface props {
-  children: JSX.Element | JSX.Element[];
+  children: JSX.Element | JSX.Element[] | React.ReactNode;
 }
-type Contexto = {
-  login: () => {};
-};
 
-interface contextTheme {
-  login: (email: string, password: string) => void;
-  loginStatus: {} | string;
-}
-export const ContextPrueba = React.createContext({} as contextTheme);
+export const ContextPrueba = createContext({});
 
-export const ContextProveedor = ({ children }: props) => {
-  // export const ContextProveedor = ({ children }) => {
-  const [loginStatus, setLoginStatus] = useState<String>('');
-  // const [loginStatus, setLoginStatus] = useState({});
-  const [email, setEmail] = useState<String>('');
-  const [password, setPassword] = useState<String>('');
+export const ContextProveedor = ({ children }) => {
+  const [userInfo, setUserInfo] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [splashLoading, setSplashLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const login = (email: any, password: any) => {
+  const login = (email: string | any[], password: string | any[]) => {
+    if (email.length > 0 || password.length > 0) {
+      setIsLoading(true);
+      axios
+        .post(`${BASE_URL}/login`, {
+          email,
+          password,
+        })
+        .then(res => {
+          // console.log(res);
+          if (res.data.message == 'logeado') {
+            let userInfo = res.data.usuario.role;
+            setUserInfo(userInfo);
+
+            console.log('usuario es:  ', userInfo);
+
+            AsyncStorage.setItem('userInfo', userInfo);
+
+            setIsLoading(false);
+          } else {
+            let userInfo = res.data.message;
+            setUserInfo(userInfo);
+
+            console.log('usuario es:  ', userInfo);
+
+            AsyncStorage.setItem('userInfo', userInfo);
+
+            setIsLoading(false);
+
+            // alert(userInfo);
+          }
+        })
+        .catch(e => {
+          console.log(`login error ${e}`);
+          setIsLoading(false);
+          // throw e;
+        });
+    } else {
+      alert(
+        'No se están recibiendo datos, favor de ingresar datos en los campos: "email" y "password"'
+      );
+    }
+  };
+
+  const register = (email, password) => {
+    setIsLoading(true);
+
     axios
-      .post('http://192.168.100.6:8000/login', {
-        // .post('http://10.42.0.55:8000/login', {
+      .post(`${BASE_URL}/register`, {
         email,
         password,
       })
-      .then((response: any) => {
-        let loginStatus = response.data;
-        console.log(loginStatus);
-        setLoginStatus(loginStatus);
-        AsyncStorage.setItem('loginStatus', JSON.stringify(loginStatus));
-        // console.log(response.data);
-        // setLoginStatus(response.data.message);
+      .then(res => {
+        let userInfo = res.data;
+        setUserInfo(userInfo);
+        setIsLoading(false);
+        console.log(userInfo);
       })
-      .catch((error: any) => {
-        console.log('login error: ', error);
+      .catch(e => {
+        console.log(`register error ${e}`);
+        setIsLoading(false);
       });
+  };
+
+  const logout = () => {
+    setIsLoading(true);
+    setUserInfo(null);
+    AsyncStorage.removeItem('userInfo');
+    console.log('Información es: ', userInfo);
+    setIsLoading(false);
+    // axios
+    //   .post(
+    //     `${BASE_URL}/logout`,
+    //     {},
+    //     {
+    //       headers: {Authorization: `Bearer ${userInfo.access_token}`},
+    //     },
+    //   )
+    //   .then(res => {
+    //     console.log(res.data);
+    //     AsyncStorage.removeItem('userInfo');
+    //     setUserInfo({});
+    //     setIsLoading(false);
+    //   })
+    //   .catch(e => {
+    //     console.log(`logout error ${e}`);
+    //     setIsLoading(false);
+    //   });
   };
 
   const isLoggedIn = async () => {
     try {
-      let loginStatus = await AsyncStorage.getItem('loginStatus');
-      loginStatus = JSON.parse(loginStatus);
+      setSplashLoading(true);
 
-      if (loginStatus) {
-        setLoginStatus(loginStatus);
+      let userInfo = await AsyncStorage.getItem('userInfo');
+      setUserInfo(userInfo);
+      // userInfo = JSON.parse(userInfo);
+
+      if (userInfo) {
+        setUserInfo(userInfo);
+        console.log('Información de usuario es: ', userInfo);
+        // console.log('ROL INFO', userInfo.usuario.rol);
+
+        // console.log('CONSOLE USUARIO', userInfo.email);
       }
+
+      setSplashLoading(false);
     } catch (e) {
+      setSplashLoading(false);
       console.log(`is logged in error ${e}`);
     }
   };
@@ -60,21 +132,18 @@ export const ContextProveedor = ({ children }: props) => {
   useEffect(() => {
     isLoggedIn();
   }, []);
-  // return (
-  //   <ContextPrueba.Provider
-  //     value={{
-  //       login,
-  //       loginStatus,
-  //     }}
-
-  //   ></ContextPrueba.Provider>
-  // );
 
   return (
     <ContextPrueba.Provider
       value={{
+        isLoading,
+        userInfo,
+        splashLoading,
+        register,
         login,
-        loginStatus,
+        logout,
+        refreshing,
+        setRefreshing,
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -8,149 +9,88 @@ import {
   View,
   Dimensions,
   Alert,
+  TextInput,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { ContextPrueba } from '../../ContextPrueba';
 
 import { useNavigation } from '@react-navigation/native';
 import { Boton } from '../../components/Boton';
 import LinearGradient from 'react-native-linear-gradient';
 import axios, * as others from 'axios';
-
+import { PanelSuperior } from '../../components/PanelSuperior';
 import { InputBox } from '../../components/InputBox';
 
 export const ScreenLogin = () => {
   const navigation = useNavigation();
 
+  const { login, userInfo } = useContext(ContextPrueba);
   const { height, width } = Dimensions.get('window');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loginStatus, setLoginStatus] = useState('');
-  const [rol, setRol] = useState('');
 
-  axios.defaults.withCredentials = true;
-
-  const register = () => {
-    axios
-      .post('http://192.168.100.6:8000/register', {
-        // .post('http://10.42.0.55:8000/register', {
-        email: email,
-        password: password,
-      })
-      .then((response: any) => {
-        console.log(response.data);
-        console.log('aa');
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
-  const login = () => {
-    axios
-      // .post('http://10.42.0.55:8000/login', {
-      .post('http://192.168.100.6:8000/login', {
-        email: email,
-        password: password,
-      })
-      .then((response: any) => {
-        console.log(response.data);
-        setLoginStatus(response.data.message);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
-    axios.get('http://192.168.100.6:8000/login').then(response => {
-      // axios.get('http://10.42.0.55:8000/login').then(response => {
-      if (response.data.loggedIn == true) {
-        setLoginStatus(response.data.user[0].email);
-        setRol(response.data.user[0].role);
-      }
-      console.log(loginStatus);
-    });
-  }, []);
-
-  if (rol == 'normalUser') {
-    navigation.navigate('ScreenMenu');
-  }
-  if (rol == 'Admin') {
-    navigation.navigate('GestionarUsuarios');
-  }
   return (
     <>
-      <LinearGradient
-        colors={['rgb(178, 56, 45)', 'rgb(255, 210, 0)']}
-        style={sty.container}
-        start={{ x: 0.1, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-      >
-        <SafeAreaView style={sty.container}>
-          <ScrollView
-            contentContainerStyle={{
-              // backgroundColor: 'red',
-              height: '50%',
+      <SafeAreaView style={sty.container}>
+        <PanelSuperior>
+          <View
+            style={{
               flex: 1,
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
             }}
           >
-            <View
+            <Image
+              source={require('../../assets/dengue.png')}
               style={{
-                flex: 1,
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
+                width: (width / 2) * 1.8,
+                height: (height / 4) * 1.5,
+                borderRadius: 16,
+                marginBottom: 40,
               }}
+            />
+            <InputBox
+              placeHolder={'Usuario'}
+              secureTextEntry={false}
+              value={email}
+              setValue={setEmail}
+              onChange={(e: {
+                target: {
+                  value: React.SetStateAction<string>;
+                };
+              }) => {
+                setEmail(e.target.value);
+              }}
+            ></InputBox>
+            <InputBox
+              placeHolder={'Contraseña'}
+              secureTextEntry={true}
+              value={password}
+              setValue={setPassword}
+              onChange={(e: {
+                target: {
+                  value: React.SetStateAction<string>;
+                };
+              }) => {
+                setPassword(e.target.value);
+              }}
+            />
+
+            <TouchableOpacity
+              style={{ marginLeft: '28%' }}
+              onPress={() => navigation.navigate('ScreenRevocerPass')}
             >
-              <Image
-                source={require('../../assets/dengue.png')}
-                style={{
-                  width: (width / 2) * 1.8,
-                  height: (height / 4) * 1.5,
-                  borderRadius: 16,
-                  marginBottom: 40,
-                }}
-              />
-              <InputBox
-                placeHolder={'Usuario'}
-                secureTextEntry={false}
-                value={email}
-                setValue={setEmail}
-                onChange={(e: {
-                  target: {
-                    value: React.SetStateAction<string>;
-                  };
-                }) => {
-                  setEmail(e.target.value);
-                }}
-              ></InputBox>
-              <InputBox
-                placeHolder={'Contraseña'}
-                secureTextEntry={true}
-                value={password}
-                setValue={setPassword}
-                onChange={(e: {
-                  target: {
-                    value: React.SetStateAction<string>;
-                  };
-                }) => {
-                  setPassword(e.target.value);
-                }}
-              />
-              <TouchableOpacity
-                style={{ marginLeft: '28%' }}
-                onPress={() => navigation.navigate('ScreenRecoverPass')}
-                // onPress={createTwoButtonAlert}
+              <Text
+                style={[
+                  sty.buttonsText,
+                  { fontWeight: 'bold', lineHeight: 30, textAlign: 'right' },
+                ]}
               >
-                <Text
-                  style={[
-                    sty.buttonsText,
-                    { fontWeight: 'bold', lineHeight: 30, textAlign: 'right' },
-                  ]}
-                >
-                  Recovery Password
-                </Text>
-              </TouchableOpacity>
-              {loginStatus == 'equivocado' ? (
+                Recovery Password
+              </Text>
+            </TouchableOpacity>
+
+            {/* {loginStatus == 'equivocado' ? (
                 <Text
                   style={[
                     sty.buttonsText,
@@ -164,27 +104,19 @@ export const ScreenLogin = () => {
                   Las credenciales proporcionados son incorrectas, favor de
                   intentarlo de nuevo
                 </Text>
-              ) : null}
-              <Text
-                style={[
-                  sty.buttonsText,
-                  {
-                    fontWeight: 'bold',
-                    lineHeight: 30,
-                    textAlign: 'right',
-                  },
-                ]}
-              ></Text>
-              <Boton
-                texto={'Iniciar sesión'}
-                icon={'sign-in'}
-                onPress={login}
-                // onPress={() => navigation.navigate('HomeMap')}
-              ></Boton>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </LinearGradient>
+              ) : null} */}
+
+            <Boton
+              texto={'Iniciar sesión'}
+              icon={'sign-in'}
+              onPress={() => login(email, password)}
+              // onPress={() => {
+              //   navigation.navigate('ScreenMenu');
+              // }}
+            ></Boton>
+          </View>
+        </PanelSuperior>
+      </SafeAreaView>
     </>
   );
 };

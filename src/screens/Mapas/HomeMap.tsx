@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { SafeAreaView, SafeAreaViewBase, Text, View } from 'react-native';
 import MapView, {
   Marker,
@@ -9,17 +8,26 @@ import MapView, {
 } from 'react-native-maps';
 import { Boton } from '../../components/Boton';
 import Search from '../../components/Search';
+import { useState, useEffect } from 'react';
+//TODO Realizar la prueba si cambia el valor
+// TODO Probar si sirve el boton para llevarme a otro jurisdiccion
 
 export const HomeMap = () => {
-  const [origin, setOrgin] = React.useState({
+  const B = props => (
+    <Text style={{ fontWeight: 'bold' }}>{props.children}</Text>
+  );
+
+  const martinez = 0.7;
+
+  const [origin, setOrgin] = useState({
     latitude: 19.540387,
     longitude: -96.916646,
   });
-  const [destination, setDestination] = React.useState({
+  const [destination, setDestination] = useState({
     latitude: 19.177414,
     longitude: -96.156084,
   });
-  const [originDelta, setOriginDelta] = React.useState({
+  const [originDelta, setOriginDelta] = useState({
     latitudeDelta: 0.2143,
     longitudeDelta: 0.2134,
   });
@@ -44,9 +52,23 @@ export const HomeMap = () => {
     ],
   };
   function aaa() {
-    const latitude = 19.540387;
-    const longitude = 96.916646;
+    setOriginDelta({
+      ...originDelta,
+      latitudeDelta: martinez,
+      longitudeDelta: 0.7,
+    });
+
+    console.log(originDelta.latitudeDelta);
+    console.log(originDelta.longitudeDelta);
   }
+
+  useEffect(() => {
+    setOriginDelta({
+      ...originDelta,
+      latitudeDelta: martinez,
+      longitudeDelta: 0.7,
+    });
+  }, [martinez]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -61,8 +83,10 @@ export const HomeMap = () => {
         <MapView
           style={{ flex: 1 }}
           initialRegion={{
+            // Creo es la posicion
             latitude: origin.latitude,
             longitude: origin.longitude,
+
             latitudeDelta: originDelta.latitudeDelta,
             longitudeDelta: originDelta.longitudeDelta,
           }}
@@ -88,9 +112,18 @@ export const HomeMap = () => {
                     // height: 80,
                   }}
                 >
-                  <Text> Estado del brote: Grave, favor de actuar rapido </Text>
-                  <Text> Municipio: Xalapa</Text>
-                  <Text> Cantidad de huevecillos: 30000</Text>
+                  <Text>
+                    <B>Estado del brote: </B>
+                    Grave
+                  </Text>
+                  <Text>
+                    <B>Municipio: </B>
+                    Xalapa
+                  </Text>
+                  <Text>
+                    <B>Cantidad de huevecillos: </B>
+                    30000
+                  </Text>
                 </View>
               </View>
             </Callout>

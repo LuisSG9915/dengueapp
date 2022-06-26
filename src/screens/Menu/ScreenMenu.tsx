@@ -1,24 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Boton } from '../../components/Boton';
 import { styles } from '../../theme/appTheme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParams } from '../../../App';
+import { ContextPrueba } from '../../ContextPrueba';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
-// type Props = NativeStackScreenProps<
-//   RootStackParams,
-//   'GestionarUsuarios',
-//   'HomeMap'
-// >;
 export const ScreenMenu = () => {
+  const { logout, userInfo } = useContext(ContextPrueba);
   const navigation = useNavigation<NativeStackScreenProps>();
+
   return (
     <View style={{ backgroundColor: 'red', flex: 1 }}>
-      {/* FIXME: Insertar imagen o icono */}
-
       <View style={styles.panelSuperiorGris}>
-        {/* FIXME: Insertar imagen */}
+        <FontAwesomeIcon size={'65%'} icon={faUser} />
       </View>
 
       <View style={styles.panelInferiorRed}>
@@ -26,8 +23,6 @@ export const ScreenMenu = () => {
           texto="Mapa"
           onPress={() => navigation.navigate('HomeMap')}
           icon="map"
-          // paddingRightIcon={92}
-          // paddingRightText={80}
         >
           <Text>a</Text>
         </Boton>
@@ -36,23 +31,23 @@ export const ScreenMenu = () => {
           texto="Métricas"
           icon="star"
           paddingRightIcon={-100}
-          // paddingRightText={80}
         ></Boton>
         <Boton
           icon="history"
           onPress={() => navigation.navigate('HistorialOvitrampa')}
           texto="Historial"
         ></Boton>
-        {/* <Boton
-          onPress={() => navigation.navigate('GestionarUsuarios')}
-          icon="users"
-          texto="Usuarios"
-        ></Boton> */}
+
         <Boton
           icon="search"
-          // onPress={async () => console.log('a')}
           onPress={async () => console.log('a')}
-          texto="Prediccion"
+          texto="Predicción"
+        ></Boton>
+        <Boton
+          texto={'Salida'}
+          onPress={() => {
+            logout();
+          }}
         ></Boton>
       </View>
     </View>

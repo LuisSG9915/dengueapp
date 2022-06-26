@@ -29,8 +29,6 @@ export const ScreenRevocerPass = () => {
           Favor de ingresar su correo para recuperar su cuenta{' '}
         </Text>
         <InputBox placeHolder={'Email'} secureTextEntry={false}></InputBox>
-        {/* FIXME: Insertar imagen  */}
-
         <Boton
           texto="Restablecer contraseña"
           margins={40}

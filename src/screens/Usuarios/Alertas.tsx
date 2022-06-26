@@ -1,16 +1,12 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { styles } from '../../theme/appTheme';
 import { getTasks } from '../../../api';
 import ListFlat from '../../components/ListFlat';
 import { PanelSuperior } from '../../components/PanelSuperior';
-import { Boton } from '../../components/Boton';
-import { useNavigation } from '@react-navigation/native';
-
+/**
+ * TODO: Realizar peticiones de los usuarios para recuperar las contraseñas
+ * TODO: Realizar funcionar el botón para visualizar y realizar la solicitud
+ */
 export const Alertas = () => {
-  const navigation = useNavigation();
-
   const [tasks, setTasks] = useState([]);
 
   const loadTasks = async () => {
@@ -25,12 +21,6 @@ export const Alertas = () => {
   return (
     <PanelSuperior>
       <ListFlat tasks={tasks}></ListFlat>
-      <Boton
-        texto={'Agregar nueva alerta'}
-        onPress={() => {
-          return navigation.navigate('ScreenFormPrueba');
-        }}
-      ></Boton>
     </PanelSuperior>
   );
 };
