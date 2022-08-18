@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { resolveConfig } from 'prettier';
 import React, { SetStateAction, useEffect } from 'react';
 import { createContext, useState } from 'react';
 import { BASE_URL } from './config';
@@ -12,27 +14,69 @@ export const ContextPrueba = createContext({});
 
 export const ContextProveedor = ({ children }) => {
   const [userInfo, setUserInfo] = useState({});
+  const [jursidición, setJurisdicción] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [splashLoading, setSplashLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [codeRecover, setCodeRecover] = useState({});
+  const [userRecover, setUserRecover] = useState({});
+  const [estadoRecuperacion, setEstadoRecuperacion] = useState({});
 
-  const login = (email: string | any[], password: string | any[]) => {
-    if (email.length > 0 || password.length > 0) {
+  const recover = (Email: string, codeRecover: any) => {
+    codeRecover = Math.floor(1000 + Math.random() * 9000);
+    setCodeRecover(codeRecover);
+    console.log('codidgo es: ', codeRecover);
+    AsyncStorage.setItem('codeRecover', codeRecover.toString());
+
+    if (Email.length > 0) {
+      axios
+        .post(`${BASE_URL}/verificarContrasena`, {
+          Email,
+          codeRecover,
+        })
+        .then(res => {
+          if (res.data.message == 'verificado') {
+            let estadoRecuperacion = '1';
+            setEstadoRecuperacion(estadoRecuperacion);
+            console.log(estadoRecuperacion);
+            AsyncStorage.setItem('estadoRecuperacion', estadoRecuperacion);
+
+            let userRecover = res.data.verificar.Email;
+            setUserRecover(userRecover);
+            console.log('usuario es:  ', userRecover);
+            AsyncStorage.setItem('userRecover', userRecover);
+          } else {
+            console.log('erroneo');
+            alert('Correo erroneo');
+          }
+        });
+    } else {
+      alert(
+        'No se están recibiendo datos, favor de ingresar datos en los campos: "email" y "password"'
+      );
+    }
+    return codeRecover;
+  };
+
+  const login = (Email: string | any[], Contraseña: string | any[]) => {
+    if (Email.length > 0 || Contraseña.length > 0) {
       setIsLoading(true);
       axios
         .post(`${BASE_URL}/login`, {
-          email,
-          password,
+          Email,
+          Contraseña,
         })
         .then(res => {
-          // console.log(res);
           if (res.data.message == 'logeado') {
-            let userInfo = res.data.usuario.role;
+            let userInfo = res.data.usuario.Rol;
+            let jursidición = res.data.usuario.Jurisdicción;
             setUserInfo(userInfo);
-
+            setJurisdicción(jursidición);
             console.log('usuario es:  ', userInfo);
+            console.log('Jurisdiccion es:  ', jursidición);
 
             AsyncStorage.setItem('userInfo', userInfo);
+            AsyncStorage.setItem('jursidición', jursidición);
 
             setIsLoading(false);
           } else {
@@ -82,44 +126,48 @@ export const ContextProveedor = ({ children }) => {
 
   const logout = () => {
     setIsLoading(true);
+
     setUserInfo(null);
     AsyncStorage.removeItem('userInfo');
+
+    setJurisdicción(null);
+    AsyncStorage.removeItem('jursidición');
+
     console.log('Información es: ', userInfo);
     setIsLoading(false);
-    // axios
-    //   .post(
-    //     `${BASE_URL}/logout`,
-    //     {},
-    //     {
-    //       headers: {Authorization: `Bearer ${userInfo.access_token}`},
-    //     },
-    //   )
-    //   .then(res => {
-    //     console.log(res.data);
-    //     AsyncStorage.removeItem('userInfo');
-    //     setUserInfo({});
-    //     setIsLoading(false);
-    //   })
-    //   .catch(e => {
-    //     console.log(`logout error ${e}`);
-    //     setIsLoading(false);
-    //   });
   };
 
   const isLoggedIn = async () => {
     try {
       setSplashLoading(true);
 
+      // Obtener informaccion
       let userInfo = await AsyncStorage.getItem('userInfo');
       setUserInfo(userInfo);
-      // userInfo = JSON.parse(userInfo);
+      let jursidición = await AsyncStorage.getItem('jursidición');
+      setJurisdicción(jursidición);
+
+      let codeRecover = await AsyncStorage.getItem('codeRecover');
+      setCodeRecover(codeRecover);
+
+      let estadoRecuperacion = await AsyncStorage.getItem('estadoRecuperacion');
+      setEstadoRecuperacion(estadoRecuperacion);
 
       if (userInfo) {
         setUserInfo(userInfo);
-        console.log('Información de usuario es: ', userInfo);
         // console.log('ROL INFO', userInfo.usuario.rol);
 
         // console.log('CONSOLE USUARIO', userInfo.email);
+      }
+      if (estadoRecuperacion) {
+        setEstadoRecuperacion('0');
+      }
+      if (codeRecover) {
+        setCodeRecover(codeRecover);
+      }
+
+      if (userRecover) {
+        setUserRecover(userRecover);
       }
 
       setSplashLoading(false);
@@ -144,6 +192,11 @@ export const ContextProveedor = ({ children }) => {
         logout,
         refreshing,
         setRefreshing,
+        jursidición,
+        estadoRecuperacion,
+        codeRecover,
+        recover,
+        setEstadoRecuperacion,
       }}
     >
       {children}

@@ -38,22 +38,7 @@ export const GestionarUsuarios = () => {
           icon="user"
           onPress={() => navigation.navigate('VisualizarUsuarios')}
         ></Boton>
-        <Boton
-          texto={'Solicitudes'}
-          icon="file"
-          onPress={() => navigation.navigate('VisualizarSolicitudes')}
-        ></Boton>
-        <Boton
-          texto={'Alertas'}
-          icon={'exclamation'}
-          onPress={() => navigation.navigate('Alertas')}
-        ></Boton>
-        <Boton
-          texto={'Salida'}
-          onPress={() => {
-            logout();
-          }}
-        ></Boton>
+
         {/* <Boton
           texto={'Alertas'}
           icon={'exclamation'}

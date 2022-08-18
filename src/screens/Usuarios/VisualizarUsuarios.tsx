@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,23 +7,32 @@ import {
   StyleSheet,
   Image,
   FlatList,
+  RefreshControl,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { InputBox } from '../../components/InputBox';
-import { styles } from '../../theme/appTheme';
-import { PanelSuperior } from '../../components/PanelSuperior';
 import axios from 'axios';
 import { BASE_URL } from '../../config';
 import UsuariosList from '../../components/UsuariosList';
+import { Picker } from '@react-native-picker/picker';
 
 export const VisualizarUsuarios = () => {
   const navigation = useNavigation();
   // const [data, setData] = useState([]);
-  const [data, setData] = useState([]);
-  const [email, setEmail] = useState([]);
-  const [password, setPassword] = useState([]);
+  const [value, setValue] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [Email, setEmail] = useState([]);
+  const [Contraseña, setContraseña] = useState([]);
   const [usuariosPet, setUsuariosPet] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [consulta, setConsulta] = useState(`${BASE_URL}/usuariosVariados/DSC`);
+  const user = `${BASE_URL}/usuarios`;
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    console.log('jeje');
+    await mostrarUsuario();
+    console.log('jeje');
+    setRefreshing(false);
+  }, []);
 
   // Use Effect para el cambio del header de navegación
   useEffect(() => {
@@ -32,47 +41,47 @@ export const VisualizarUsuarios = () => {
       headerTitle: ' Usuarios',
 
       // SearchBar en el header
-      headerSearchBarOptions: {
-        placeholder: 'Friends',
-        // Evento escritura búsqueda de amigos
-        onChangeText: (event: { nativeEvent: { text: any } }) => {
-          // funcipon: pasa filtrar la información  de lo que se está escribiendo
-          // Se accede al evento (o información) con nativeEvent
-          searchFilterFunction(event.nativeEvent.text);
-        },
-      },
+      // headerSearchBarOptions: {
+      //   placeholder: 'Friends',
+      // Evento escritura búsqueda de amigos
+      //   onChangeText: (event: { nativeEvent: { text: any } }) => {
+      // funcipon: pasa filtrar la información  de lo que se está escribiendo
+      // Se accede al evento (o información) con nativeEvent
+      //     searchFilterFunction(event.nativeEvent.text);
+      //   },
+      // },
     });
   }, [navigation]);
 
-  const searchFilterFunction = async (text: string) => {
-    // Hay texto?
-    if (text) {
-      // gurda datos ya filtraddas, por cada item
-      const newData = data.filter(item => {
-        // hay un nombre en el input?
-        const itemData = item.name.first
-          ? // convertir item a mayusculas
-            item.name.first.toUpperCase()
-          : // en caso de que no haya nada se realizará una conf nulla en mayusculas
-            ''.toUpperCase();
-        // Lo que se está escribiendo se debe de comparar, por lo que de igual manera se convierte en mayusculas
-        const textData = text.toUpperCase();
-        // Regresa itemdata
-        return itemData.indexOf(textData) > -1;
-      });
-      setFilteredData(newData);
-    } else {
-      // Regresa datos sin ordenar
-      setFilteredData(data);
-    }
-  };
+  // const searchFilterFunction = async (text: string) => {
+  //   // Hay texto?
+  //   if (text) {
+  //     // gurda datos ya filtraddas, por cada item
+  //     const newData = data.filter(item => {
+  //       // hay un nombre en el input?
+  //       const itemData = item.name.first
+  // ? // convertir item a mayusculas
+  //           item.name.first.toUpperCase()
+  //         : // en caso de que no haya nada se realizará una conf nulla en mayusculas
+  //           ''.toUpperCase();
+  //       // Lo que se está escribiendo se debe de comparar, por lo que de igual manera se convierte en mayusculas
+  //       const textData = text.toUpperCase();
+  //       // Regresa itemdata
+  //       return itemData.indexOf(textData) > -1;
+  //     });
+  //     setUsuariosPet(newData);
+  //   } else {
+  //     // Regresa datos sin ordenar
+  //     setUsuariosPet(data);
+  //   }
+  // };
 
   const mostrarUsuario = async () => {
     // setIsLoading(true);
     axios
-      .get(`${BASE_URL}/usuarios`, {
-        email,
-        password,
+      .get(consulta, {
+        Email,
+        Contraseña,
       })
       .then(res => {
         const usuarios = res.data;
@@ -85,22 +94,33 @@ export const VisualizarUsuarios = () => {
       });
   };
 
-  const fetchData = async (url: string) => {
-    try {
-      const response = await fetch(url);
-      const json = await response.json();
-      setData(json.results);
-      setFilteredData(json.results);
-      console.log(json.results);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    // fetchData('https://randomuser.me/api/?results=20');
     mostrarUsuario();
   }, []);
+
+  const jurisdiccion = [
+    'Ascendente',
+    'Descendente',
+    'Operativos',
+    'Directivos',
+  ];
+
+  const pickerData = (dato: any[]) => {
+    return (
+      dato?.length > 0 &&
+      dato.map((val, index) => (
+        <Picker.Item label={val} value={val} key={index} />
+      ))
+    );
+  };
+
+  const jursdicciones = value => {
+    setValue(value);
+    if (value == 'DESC') {
+      setConsulta(`${BASE_URL}/usuariosVariados/${value}`);
+      mostrarUsuario();
+    }
+  };
 
   return (
     <View
@@ -110,7 +130,35 @@ export const VisualizarUsuarios = () => {
       }}
     >
       <View style={stylesX.container}>
-        <UsuariosList usuariosPet={usuariosPet}></UsuariosList>
+        <View
+          style={{
+            // marginTop: 25,
+            paddingHorizontal: 25,
+            paddingBottom: 8,
+            backgroundColor: 'rgb(87, 87, 86)',
+            borderRadius: 150,
+          }}
+        >
+          <Picker
+            style={{ backgroundColor: 'white' }}
+            selectedValue={value}
+            onFocus={() => {}}
+            onValueChange={(itemValue, itemIndex) => jursdicciones(itemValue)}
+          >
+            {pickerData(jurisdiccion)}
+          </Picker>
+        </View>
+        <UsuariosList
+          refreshControl={
+            <RefreshControl
+              onRefresh={() => {
+                onRefresh();
+              }}
+              refreshing={refreshing}
+            />
+          }
+          usuariosPet={usuariosPet}
+        ></UsuariosList>
       </View>
     </View>
   );

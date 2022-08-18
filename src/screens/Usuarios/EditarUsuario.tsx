@@ -1,40 +1,46 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Alert,
+} from 'react-native';
 import { styles } from '../../theme/appTheme';
 import { useNavigation } from '@react-navigation/native';
 import { PanelSuperior } from '../../components/PanelSuperior';
 import { Picker } from '@react-native-picker/picker';
 import { saveUsuario } from '../../../api';
 
-export const CrearUsuarios = ({ route }) => {
-  const navigation = useNavigation();
-  const [edicion, setEdicion] = useState(false);
+export const EditarUsuario = () => {
   const [value, setValue] = useState([]);
+
   const [usuario, setUsuario] = useState({
     Nombre: '',
     Email: '',
     Contraseña: '',
     Puesto: '',
     Rol: '',
-    Jurisdicción: '',
   });
+  const mostrarAlerta = () => {
+    // Alert.alert(
+    //   'El usuario no ha solicitdado de manera correcta',
+    //   'El administrador debe aceptar la solicitud'
+    // );
+    // Alert.alert(
+    //   'El usuario no ha sido solicitdado',
+    //   'Favor de comunicarse con el administrador'
+    // );
+    Alert.alert('El usuario no ha sido registrado correctamente');
+    // Alert.alert('El usuario ha sido registrado correctamente');
+  };
 
   const handleChange = (name, value) =>
     setUsuario({ ...usuario, [name]: value });
 
   const handleSubmit = () => {
     saveUsuario(usuario);
-  };
-
-  const clearHandle = name => {
-    setUsuario({
-      Nombre: '',
-      Email: '',
-      Contraseña: '',
-      Puesto: '',
-      Rol: '',
-      Jurisdicción: '',
-    });
   };
 
   const pickerData = dato => {
@@ -52,7 +58,6 @@ export const CrearUsuarios = ({ route }) => {
   };
 
   const rolUsuario = ['Directivo', 'Operativo'];
-
   const puestoUsuario = [
     'Director',
     'Subdirector',
@@ -63,13 +68,14 @@ export const CrearUsuarios = ({ route }) => {
   return (
     <View style={{ backgroundColor: 'red', flex: 1 }}>
       <PanelSuperior>
+        {/*  */}
         <Text style={styles.headerTexto}>Nombre de usuario</Text>
         <InputUsuario
           handleChange={handleChange}
           placeholder={'Nombre'}
           handleText={'Nombre'}
-          value={usuario.Nombre}
           secureTextEntry={false}
+          editable={true}
         />
 
         <Text style={styles.headerTexto}>Email</Text>
@@ -77,8 +83,8 @@ export const CrearUsuarios = ({ route }) => {
           handleChange={handleChange}
           placeholder={'Email'}
           handleText={'Email'}
-          value={usuario.Email}
           secureTextEntry={false}
+          editable={true}
         />
 
         <Text style={styles.headerTexto}>Contraseña</Text>
@@ -86,12 +92,12 @@ export const CrearUsuarios = ({ route }) => {
           handleChange={handleChange}
           placeholder={'Contraseña'}
           handleText={'Contraseña'}
-          value={usuario.Contraseña}
-          secureTextEntry={edicion}
+          secureTextEntry={true}
+          editable={false}
         />
 
         <Text style={styles.headerTexto}>Puesto</Text>
-        {/* 
+
         <View
           style={{
             backgroundColor: 'white',
@@ -107,37 +113,24 @@ export const CrearUsuarios = ({ route }) => {
           >
             {pickerData(puestoUsuario)}
           </Picker>
-        </View> */}
-
-        <InputUsuario
+        </View>
+        {/* <Text style={styles.headerTexto}>Puesto</Text> */}
+        {/* <InputUsuario
           handleChange={handleChange}
-          placeholder={'Puesto de trabajo'}
+          placeholder={'Puesto'}
           handleText={'Puesto'}
-          value={usuario.Puesto}
-          secureTextEntry={false}
-        />
+        /> */}
 
         {/* <Text style={styles.headerTexto}>Rol</Text> */}
+        {/*
+        <InputUsuario
+        handleChange={handleChange}
+        placeholder={'Rol'}
+        handleText={'Rol'}
+      /> */}
+
         <Text style={styles.headerTexto}>Rol</Text>
-
-        <InputUsuario
-          handleChange={handleChange}
-          placeholder={'Rol del usuario'}
-          handleText={'Rol'}
-          value={usuario.Rol}
-          secureTextEntry={false}
-        />
-        <Text style={styles.headerTexto}>Jurisdicción</Text>
-
-        <InputUsuario
-          handleChange={handleChange}
-          placeholder={'Jurisdicción del usuario'}
-          handleText={'Jurisdicción'}
-          value={usuario.Jurisdicción}
-          secureTextEntry={false}
-        />
-
-        {/* <View
+        <View
           style={{
             backgroundColor: 'white',
             width: '60%',
@@ -152,17 +145,18 @@ export const CrearUsuarios = ({ route }) => {
           >
             {pickerData(rolUsuario)}
           </Picker>
-        </View> */}
+        </View>
 
         <TouchableOpacity
           style={{ marginVertical: 50 }}
           onPress={() => {
+            mostrarAlerta();
             handleSubmit(usuario);
-            clearHandle(usuario);
+            console.log(usuario);
           }}
         >
           <View style={styles.botonBox}>
-            <Text style={styles.botonText}> Crear usuario</Text>
+            <Text style={styles.botonText}> Editar usuario</Text>
           </View>
         </TouchableOpacity>
       </PanelSuperior>
@@ -174,8 +168,8 @@ function InputUsuario({
   handleChange,
   placeholder,
   handleText,
-  value,
   secureTextEntry,
+  editable,
 }) {
   return (
     <TextInput
@@ -189,8 +183,8 @@ function InputUsuario({
         height: '5.6%',
         borderRadius: 20,
       }}
-      value={value}
       secureTextEntry={secureTextEntry}
+      editable={editable}
     ></TextInput>
   );
 }

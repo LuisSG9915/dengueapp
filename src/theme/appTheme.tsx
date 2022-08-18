@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { palette } from './theme';
 
 export const styles = StyleSheet.create({
@@ -107,5 +107,59 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: palette.grayScale.gray100,
     fontSize: 18,
+  },
+
+  itemContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: 10,
+    backgroundColor: 'rgba(248, 248, 248,0.8)',
+  },
+  containers: {
+    backgroundColor: 'rgb(87, 87, 86)',
+    flex: 1,
+    paddingVertical: 22,
+  },
+  textGrande: {
+    fontSize: 18,
+    textAlign: 'center',
+    paddingVertical: 2,
+  },
+  textSmall: {
+    fontSize: 18,
+    paddingVertical: 2,
+  },
+  containerText: {
+    width: Dimensions.get('window').width * 0.9,
+    height: Dimensions.get('window').width * 0.28,
+    marginTop: 8,
+    marginBottom: 8,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    shadowColor: 'pink',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 8,
+  },
+  graphicTitle: {
+    width: '70%',
+    height: '4%',
+    marginVertical: 7,
+    opacity: 0.8,
+    backgroundColor: 'rgb(178, 56, 45)',
+    justifyContent: 'center',
+    borderRadius: 16,
+    shadowColor: 'pink',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 8,
   },
 });

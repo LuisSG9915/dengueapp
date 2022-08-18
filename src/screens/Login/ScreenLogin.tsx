@@ -9,6 +9,7 @@ import {
   View,
   Dimensions,
   Alert,
+  Button,
   TextInput,
 } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
@@ -16,19 +17,55 @@ import { ContextPrueba } from '../../ContextPrueba';
 
 import { useNavigation } from '@react-navigation/native';
 import { Boton } from '../../components/Boton';
-import LinearGradient from 'react-native-linear-gradient';
-import axios, * as others from 'axios';
+
 import { PanelSuperior } from '../../components/PanelSuperior';
 import { InputBox } from '../../components/InputBox';
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faEye, faUser } from '@fortawesome/free-solid-svg-icons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import notifee from '@notifee/react-native';
 
 export const ScreenLogin = () => {
   const navigation = useNavigation();
 
-  const { login, userInfo } = useContext(ContextPrueba);
+  const { login, userInfo, estadoRecuperacion } = useContext(ContextPrueba);
   const { height, width } = Dimensions.get('window');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [Email, setEmail] = useState('');
+  const [Contraseña, setContraseña] = useState('');
+  const [hidePass, setHidePass] = useState(true);
+  const [estado, setEstado] = useState('1');
 
+  useEffect(() => {
+    if (estado == '2') {
+      onDisplayNotification();
+      setEstado('1');
+    }
+  }, [estado]);
+
+  async function onDisplayNotification() {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission();
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+      title: 'Notification Title',
+      body: 'Main body content of the notification',
+      android: {
+        channelId,
+
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  }
   return (
     <>
       <SafeAreaView style={sty.container}>
@@ -52,7 +89,7 @@ export const ScreenLogin = () => {
             <InputBox
               placeHolder={'Usuario'}
               secureTextEntry={false}
-              value={email}
+              value={Email}
               setValue={setEmail}
               onChange={(e: {
                 target: {
@@ -62,19 +99,30 @@ export const ScreenLogin = () => {
                 setEmail(e.target.value);
               }}
             ></InputBox>
-            <InputBox
-              placeHolder={'Contraseña'}
-              secureTextEntry={true}
-              value={password}
-              setValue={setPassword}
-              onChange={(e: {
-                target: {
-                  value: React.SetStateAction<string>;
-                };
-              }) => {
-                setPassword(e.target.value);
-              }}
-            />
+
+            <View style={{ justifyContent: 'center' }}>
+              <TextInput
+                placeholder="Contraseña"
+                secureTextEntry={hidePass ? true : false}
+                value={Contraseña}
+                onChangeText={setContraseña}
+                style={sty.input}
+                onChange={(e: {
+                  target: {
+                    value: React.SetStateAction<string>;
+                  };
+                }) => {
+                  setContraseña(e.target.value);
+                }}
+              ></TextInput>
+
+              <TouchableOpacity
+                onPress={() => setHidePass(!hidePass)}
+                style={sty.eye}
+              >
+                <FontAwesomeIcon size={20} icon={faEye} />
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity
               style={{ marginLeft: '28%' }}
@@ -90,26 +138,31 @@ export const ScreenLogin = () => {
               </Text>
             </TouchableOpacity>
 
-            {/* {loginStatus == 'equivocado' ? (
-                <Text
-                  style={[
-                    sty.buttonsText,
-                    {
-                      fontWeight: 'bold',
-                      textAlign: 'right',
-                      color: 'red',
-                    },
-                  ]}
-                >
-                  Las credenciales proporcionados son incorrectas, favor de
-                  intentarlo de nuevo
-                </Text>
-              ) : null} */}
+            {userInfo ? (
+              <Text
+                style={[
+                  sty.buttonsText,
+                  {
+                    fontWeight: 'bold',
+                    textAlign: 'right',
+                    color: '#FF5E61',
+                  },
+                ]}
+              >
+                Las credenciales proporcionados son incorrectas, favor de
+                intentarlo de nuevo
+              </Text>
+            ) : null}
+
+            {/* <Button
+              title="Display Notification"
+              onPress={() => setEstado('2')}
+            /> */}
 
             <Boton
               texto={'Iniciar sesión'}
               icon={'sign-in'}
-              onPress={() => login(email, password)}
+              onPress={() => login(Email, Contraseña)}
               // onPress={() => {
               //   navigation.navigate('ScreenMenu');
               // }}
@@ -189,5 +242,26 @@ const sty = StyleSheet.create({
     },
     shadowOpacity: 0.44,
     shadowRadius: 10.32,
+  },
+  input: {
+    width: 300,
+    height: 55,
+    backgroundColor: '#FFF',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginVertical: -15,
+    borderRadius: 15,
+    fontSize: 16,
+  },
+  eye: {
+    position: 'absolute',
+    right: '1%',
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -1,21 +1,25 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Boton } from '../../components/Boton';
 import { styles } from '../../theme/appTheme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ContextPrueba } from '../../ContextPrueba';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 export const ScreenMenu = () => {
-  const { logout, userInfo } = useContext(ContextPrueba);
-  const navigation = useNavigation<NativeStackScreenProps>();
+  const { userInfo } = useContext(ContextPrueba);
+  const navigation = useNavigation();
 
   return (
     <View style={{ backgroundColor: 'red', flex: 1 }}>
       <View style={styles.panelSuperiorGris}>
         <FontAwesomeIcon size={'65%'} icon={faUser} />
+        {userInfo == 'Directivo' || userInfo == 'directivo' ? (
+          <Text style={{ fontSize: 18, top: 20 }}>Usuario: directivo </Text>
+        ) : (
+          <Text style={{ fontSize: 18, top: 20 }}>Usuario: Operativo</Text>
+        )}
       </View>
 
       <View style={styles.panelInferiorRed}>
@@ -23,9 +27,7 @@ export const ScreenMenu = () => {
           texto="Mapa"
           onPress={() => navigation.navigate('HomeMap')}
           icon="map"
-        >
-          <Text>a</Text>
-        </Boton>
+        ></Boton>
         <Boton
           onPress={() => navigation.navigate('MetricsScreen')}
           texto="Métricas"
@@ -40,14 +42,8 @@ export const ScreenMenu = () => {
 
         <Boton
           icon="search"
-          onPress={async () => console.log('a')}
+          onPress={() => navigation.navigate('ScreenPredicciones')}
           texto="Predicción"
-        ></Boton>
-        <Boton
-          texto={'Salida'}
-          onPress={() => {
-            logout();
-          }}
         ></Boton>
       </View>
     </View>
